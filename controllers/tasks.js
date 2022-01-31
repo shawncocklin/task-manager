@@ -1,16 +1,28 @@
+const Task = require('../models/Task')
+
 function testRoute(req,res,next) {
   res.send('it works!')
 }
 
-function getAllTasks(req,res,next) {
-  // TODO: create API
-  res.send('getting all tasks!')
+async function getAllTasks(req,res,next) {
+  try {
+    const tasks = await Task.find({})
+    res.status(200).json({tasks}) 
+  } catch (error) {
+    res.status(500).json({msg: error})
+    
+  }
 
 }
 
-function createTask(req,res,next) {
-  // TODO: create API
-  res.json(req.body)
+async function createTask(req,res,next) {
+  try {
+    const task = await Task.create(req.body)
+    res.status(201).json({task})
+    
+  } catch (error) {
+    res.status(500).json({msg: error})
+  }
 
 }
 
