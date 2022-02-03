@@ -12,7 +12,6 @@ async function getAllTasks(req,res,next) {
     res.status(500).json({msg: error})
     
   }
-
 }
 
 async function createTask(req,res,next) {
@@ -23,25 +22,52 @@ async function createTask(req,res,next) {
   } catch (error) {
     res.status(500).json({msg: error})
   }
+}
+
+async function getTaskByID(req,res,next) {
+  try {
+    const {id:taskID} = req.params
+    const task = await Task.findOne({_id:taskID})
+    if(!task) {
+      return res.status(404).json({msg: `cannot find task with id: ${taskID}`})
+    }
+    res.status(200).json({task}) 
+  } catch (error) {
+    res.status(500).json({msg: error})
+  }
 
 }
 
-function getTaskByID(req,res,next) {
-  // TODO: create API
-  res.json({id: req.params.id})
+async function updateTask(req,res,next) {
+  try {
+    const {id:taskID} = req.params
+    const task = await Task.findOneAndUpdate({_id:taskID}, req.body, {
+      new: true,
+      runValidators: true
+    })
+    if(!task) {
+      return res.status(404).json({msg: `cannot find task with id: ${taskID}`})
+    }
+    
+    res.status(200).json({task})
+  } catch (error) {
+    res.status(500).json({msg: error})
+  }
 
 }
 
-function updateTask(req,res,next) {
-  // TODO: create API
-  res.send('updating task')
-
-}
-
-function deleteTask(req,res,next) {
-  // TODO: create API
-  res.send('deleting task')
-
+async function deleteTask(req,res,next) {
+  try {
+    const {id:taskID} = req.params
+    const task = await Task.findOneAndDelete({_id:taskID})
+    if(!task) {
+      return res.status(404).json({msg: `cannot find task with id: ${taskID}`})
+    }
+    // provide visibility for testing purposes
+    res.status(200).json({task}) 
+  } catch (error) {
+    res.status(500).json({msg: error})
+  }
 }
 
 module.exports = {
