@@ -1,5 +1,6 @@
 const Task = require('../models/Task')
 const asyncWrapper = require('../middleware/async')
+const {createCustomError} = require('../errors/custom-errors')
 
 function testRoute(req,res,next) {
   res.send('it works!')
@@ -19,7 +20,7 @@ const getTaskByID = asyncWrapper(async (req,res,next) => {
   const {id:taskID} = req.params
   const task = await Task.findOne({_id:taskID})
   if(!task) {
-    return res.status(404).json({msg: `cannot find task with id: ${taskID}`})
+    return next(createCustomError(`cannot find task with id: ${taskID}`, 404))
   }
   res.status(200).json({task}) 
 })
@@ -31,7 +32,7 @@ const updateTask = asyncWrapper(async (req,res,next) => {
     runValidators: true
   })
   if(!task) {
-    return res.status(404).json({msg: `cannot find task with id: ${taskID}`})
+    return next(createCustomError(`cannot find task with id: ${taskID}`, 404))
   }
   res.status(200).json({task})
 })
@@ -40,7 +41,7 @@ const deleteTask = asyncWrapper(async (req,res,next) => {
   const {id:taskID} = req.params
   const task = await Task.findOneAndDelete({_id:taskID})
   if(!task) {
-    return res.status(404).json({msg: `cannot find task with id: ${taskID}`})
+    return next(createCustomError(`cannot find task with id: ${taskID}`, 404))
   }
   // provide visibility for testing purposes
   res.status(200).json({task}) 

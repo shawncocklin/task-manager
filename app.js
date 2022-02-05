@@ -1,7 +1,7 @@
 /*
   REFERENCES AND IMPORTS
 */
-const PORT = 5000
+const PORT = process.env.PORT || 5000
 const express = require('express')
 const taskRouter = require('./routes/tasks')
 const {connectDB} = require('./db/connect')
